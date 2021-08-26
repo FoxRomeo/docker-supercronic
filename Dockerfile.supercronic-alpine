@@ -1,0 +1,30 @@
+FROM <<BASECONTAINER>>
+MAINTAINER docker@intrepid.de
+
+ENV MAKELIMIT=1
+ENV TZ="Europe/Berlin"
+# Architecture depending ENV SUPERCRONIC_URL, SUPERCRONIC, SUPERCRONIC_SHA1SUM provided by Jenkinsfile
+# for manual run add values from  https://github.com/aptible/supercronic/releases
+# <<ENV>>
+
+
+RUN passwd -l root ; \
+    apk add --update --no-cache musl-dev bash tzdata curl && \
+    mkdir -p /usr/local/bin ; \
+    mkdir /etc/cron.d ; \
+    chown cron /etc/cron.d && \
+    rm -rf /var/cache/apk/*
+run set
+
+RUN curl -fsSLO "${SUPERCRONIC_URL}" && \
+    echo "${SUPERCRONIC_SHA1SUM}  ${SUPERCRONIC}" | sha1sum -c - && \
+    chmod +x "$SUPERCRONIC" && \
+    mv "$SUPERCRONIC" "/usr/local/bin/${SUPERCRONIC}" && \
+    ln -s "/usr/local/bin/${SUPERCRONIC}" /usr/local/bin/supercronic
+
+
+# -v <path_to_your>/crontab:/etc/cron.d/crontab:ro
+# file must be readable by user cron (uid 16)
+
+USER cron
+CMD ["/usr/local/bin/supercronic", "/etc/cron.d/crontab"]
