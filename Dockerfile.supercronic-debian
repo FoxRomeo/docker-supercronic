@@ -9,11 +9,14 @@ ENV TZ="Europe/Berlin"
 
 
 RUN passwd -l root ; \
-    apk add --update --no-cache musl-dev bash tzdata curl && \
+    apt update ; \
+    apt -qy upgrade && \
+    apt -qy install bash tzdata curl && \
+    addgroup --system --gid 16 cron && \
+    adduser --system --gid 16 --uid 16 --no-create-home --shell /bin/true --home /nonexistent cron && \
     mkdir -p /usr/local/bin ; \
-    mkdir /etc/cron.d ; \
-    chown cron /etc/cron.d && \
-    rm -rf /var/cache/apk/*
+    mkdir -p /etc/cron.d ; \
+    chown cron:cron /etc/cron.d
 
 RUN curl -fsSLO "${SUPERCRONIC_URL}" && \
 #    echo "${SUPERCRONIC_SHA1SUM}  ${SUPERCRONIC}" | sha1sum -c - && \
