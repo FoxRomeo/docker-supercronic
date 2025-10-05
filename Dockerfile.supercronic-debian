@@ -1,5 +1,7 @@
 FROM <<BASECONTAINER>>
-MAINTAINER docker@intrepid.de
+
+LABEL maintainer="docker@intrepid.de"
+ENV DEBIAN_FRONTEND=noninteractive
 
 ENV MAKELIMIT=1
 ENV TZ="Europe/Berlin"
