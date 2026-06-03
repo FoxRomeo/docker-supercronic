@@ -10,9 +10,6 @@ ENV TZ="Europe/Berlin"
 # <<ENV>>
 
 ARG TARGETARCH
-ARG TARGETVARIANT
-ARG SOFTWAREVERSION=0.5.0
-
 
 RUN passwd -l root ; \
     apk add --update --no-cache musl-dev bash tzdata curl && \
@@ -23,11 +20,11 @@ RUN passwd -l root ; \
 
 
 # Supercronic binary je nach Architektur auswählen
-RUN case "${TARGETARCH}/${TARGETVARIANT}" in \
-      "amd64/")     SUPERCRONIC_BINARY="supercronic-linux-amd64"  ;; \
-      "arm64/v8")   SUPERCRONIC_BINARY="supercronic-linux-arm64"  ;; \
-      "arm/v6")     SUPERCRONIC_BINARY="supercronic-linux-arm"    ;; \
-      *)            echo "Unsupported: ${TARGETARCH}/${TARGETVARIANT}"; exit 1 ;; \
+RUN case "${TARGETARCH}" in \
+      "amd64")  SUPERCRONIC_BINARY="supercronic-linux-amd64" ;; \
+      "arm64")  SUPERCRONIC_BINARY="supercronic-linux-arm64" ;; \
+      "arm")    SUPERCRONIC_BINARY="supercronic-linux-arm"   ;; \
+      *)        echo "Unsupported: ${TARGETARCH}"; exit 1    ;; \
     esac && \
     SUPERCRONIC_URL="https://github.com/aptible/supercronic/releases/download/v${SOFTWAREVERSION}/${SUPERCRONIC_BINARY}" && \
     curl -fsSL "$SUPERCRONIC_URL" -o /usr/local/bin/supercronic && \
