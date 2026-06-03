@@ -28,9 +28,7 @@ RUN case "${TARGETARCH}" in \
     esac && \
     SUPERCRONIC_URL="https://github.com/aptible/supercronic/releases/download/v${SOFTWAREVERSION}/${SUPERCRONIC_BINARY}" && \
     curl -fsSL "$SUPERCRONIC_URL" -o /usr/local/bin/supercronic && \
-    chmod +x /usr/local/bin/supercronic && \
-    ln -s "/usr/local/bin/${SUPERCRONIC}" /usr/local/bin/supercronic
-
+    chmod +x /usr/local/bin/supercronic
 
 # -v <path_to_your>/crontab:/etc/cron.d/crontab:ro
 # file must be readable by user cron (uid 16)
