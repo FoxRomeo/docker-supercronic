@@ -9,6 +9,10 @@ ENV TZ="Europe/Berlin"
 # for manual run add values from  https://github.com/aptible/supercronic/releases
 # <<ENV>>
 
+ARG TARGETARCH
+ARG TARGETVARIANT
+ARG SOFTWAREVERSION=0.5.0
+
 
 RUN passwd -l root ; \
     apk add --update --no-cache musl-dev bash tzdata curl && \
@@ -17,10 +21,17 @@ RUN passwd -l root ; \
     chown cron /etc/cron.d && \
     rm -rf /var/cache/apk/*
 
-RUN curl -fsSLO "${SUPERCRONIC_URL}" && \
-#    echo "${SUPERCRONIC_SHA1SUM}  ${SUPERCRONIC}" | sha1sum -c - && \
-    chmod +x "$SUPERCRONIC" && \
-    mv "${SUPERCRONIC}" "/usr/local/bin/${SUPERCRONIC}" && \
+
+# Supercronic binary je nach Architektur auswählen
+RUN case "${TARGETARCH}/${TARGETVARIANT}" in \
+      "amd64/")     SUPERCRONIC_BINARY="supercronic-linux-amd64"  ;; \
+      "arm64/v8")   SUPERCRONIC_BINARY="supercronic-linux-arm64"  ;; \
+      "arm/v6")     SUPERCRONIC_BINARY="supercronic-linux-arm"    ;; \
+      *)            echo "Unsupported: ${TARGETARCH}/${TARGETVARIANT}"; exit 1 ;; \
+    esac && \
+    SUPERCRONIC_URL="https://github.com/aptible/supercronic/releases/download/v${SOFTWAREVERSION}/${SUPERCRONIC_BINARY}" && \
+    curl -fsSL "$SUPERCRONIC_URL" -o /usr/local/bin/supercronic && \
+    chmod +x /usr/local/bin/supercronic && \
     ln -s "/usr/local/bin/${SUPERCRONIC}" /usr/local/bin/supercronic
 
 
