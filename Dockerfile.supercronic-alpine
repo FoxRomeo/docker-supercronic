@@ -26,7 +26,7 @@ RUN case "${TARGETARCH}" in \
       "arm")    SUPERCRONIC_BINARY="supercronic-linux-arm"   ;; \
       *)        echo "Unsupported: ${TARGETARCH}"; exit 1    ;; \
     esac && \
-    SUPERCRONIC_URL="https://github.com/aptible/supercronic/releases/download/v${SOFTWAREVERSION}/${SUPERCRONIC_BINARY}" && \
+    SUPERCRONIC_URL="https://github.com/aptible/supercronic/releases/download/${SOFTWAREVERSION}/${SUPERCRONIC_BINARY}" && \
     curl -fsSL "$SUPERCRONIC_URL" -o /usr/local/bin/supercronic && \
     chmod +x /usr/local/bin/supercronic
 
