@@ -1,6 +1,6 @@
 # supercronic-alpine
 
-Supercrpnic container for x86/amd64, ARM64, arm32v6
+Supercrpnic container for x86/amd64, ARM64, arm32v6 (Raspberry Pi)
 based on alpine or debian
 
 ```
