@@ -5,7 +5,8 @@ ENV DEBIAN_FRONTEND=noninteractive
 
 ENV MAKELIMIT=1
 ENV TZ="Europe/Berlin"
-# Architecture depending ENV SUPERCRONIC_URL, SUPERCRONIC, SUPERCRONIC_SHA1SUM provided by Jenkinsfile
+# Architecture depending
+# ENV SUPERCRONICVERSION (incl v) provided by Jenkinsfile
 # for manual run add values from  https://github.com/aptible/supercronic/releases
 # <<ENV>>
 
@@ -20,11 +21,16 @@ RUN passwd -l root ; \
     mkdir -p /etc/cron.d ; \
     chown cron:cron /etc/cron.d
 
-RUN curl -fsSLO "${SUPERCRONIC_URL}" && \
-#    echo "${SUPERCRONIC_SHA1SUM}  ${SUPERCRONIC}" | sha1sum -c - && \
-    chmod +x "$SUPERCRONIC" && \
-    mv "${SUPERCRONIC}" "/usr/local/bin/${SUPERCRONIC}" && \
-    ln -s "/usr/local/bin/${SUPERCRONIC}" /usr/local/bin/supercronic
+# Supercronic binary je nach Architektur auswählen
+RUN case "${TARGETARCH}" in \
+      "amd64")  SUPERCRONIC_BINARY="supercronic-linux-amd64" ;; \
+      "arm64")  SUPERCRONIC_BINARY="supercronic-linux-arm64" ;; \
+      "arm")    SUPERCRONIC_BINARY="supercronic-linux-arm"   ;; \
+      *)        echo "Unsupported: ${TARGETARCH}"; exit 1    ;; \
+    esac && \
+    SUPERCRONIC_URL="https://github.com/aptible/supercronic/releases/download/${SUPERCRONICVERSION}/${SUPERCRONIC_BINARY}" && \
+    curl -fsSL "$SUPERCRONIC_URL" -o /usr/local/bin/supercronic && \
+    chmod +x /usr/local/bin/supercronic
 
 
 # -v <path_to_your>/crontab:/etc/cron.d/crontab:ro
