@@ -6,7 +6,7 @@ ENV DEBIAN_FRONTEND=noninteractive
 ENV MAKELIMIT=1
 ENV TZ="Europe/Berlin"
 # Architecture depending
-# ENV SUPERCRONICVERSION (incl v) provided by Jenkinsfile
+# ENV SUPERCRONICVERSION (incl starting v) provided by Jenkinsfile
 # for manual run add values from  https://github.com/aptible/supercronic/releases
 # <<ENV>>
 
