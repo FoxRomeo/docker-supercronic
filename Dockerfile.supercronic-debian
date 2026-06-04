@@ -10,6 +10,7 @@ ENV TZ="Europe/Berlin"
 # for manual run add values from  https://github.com/aptible/supercronic/releases
 # <<ENV>>
 
+ARG TARGETARCH
 
 RUN passwd -l root ; \
     apt update ; \
