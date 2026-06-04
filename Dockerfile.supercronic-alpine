@@ -5,7 +5,7 @@ ENV DEBIAN_FRONTEND=noninteractive
 
 ENV MAKELIMIT=1
 ENV TZ="Europe/Berlin"
-# Architecture depending ENV SUPERCRONIC_URL, SUPERCRONIC, SUPERCRONIC_SHA1SUM provided by Jenkinsfile
+# Architecture depending ENV SUPERCRONICVERSION (incl starting v) provided by Jenkinsfile
 # for manual run add values from  https://github.com/aptible/supercronic/releases
 # <<ENV>>
 
@@ -18,7 +18,6 @@ RUN passwd -l root ; \
     chown cron /etc/cron.d && \
     rm -rf /var/cache/apk/*
 
-
 # Supercronic binary je nach Architektur auswählen
 RUN case "${TARGETARCH}" in \
       "amd64")  SUPERCRONIC_BINARY="supercronic-linux-amd64" ;; \
@@ -26,7 +25,7 @@ RUN case "${TARGETARCH}" in \
       "arm")    SUPERCRONIC_BINARY="supercronic-linux-arm"   ;; \
       *)        echo "Unsupported: ${TARGETARCH}"; exit 1    ;; \
     esac && \
-    SUPERCRONIC_URL="https://github.com/aptible/supercronic/releases/download/${SOFTWAREVERSION}/${SUPERCRONIC_BINARY}" && \
+    SUPERCRONIC_URL="https://github.com/aptible/supercronic/releases/download/${SUPERCRONICVERSION}/${SUPERCRONIC_BINARY}" && \
     curl -fsSL "$SUPERCRONIC_URL" -o /usr/local/bin/supercronic && \
     chmod +x /usr/local/bin/supercronic
 
